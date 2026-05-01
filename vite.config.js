@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import { readFileSync } from 'node:fs'
 
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
-const name = pkg.name.split('/').at(-1)
+const name = pkg.name.split('/').pop()
 const banner = `/*!
  * ${pkg.name} v${pkg.version}
  * ${pkg.description}
@@ -12,25 +12,31 @@ const banner = `/*!
 
 export default defineConfig(({ mode }) => {
   const isProd = mode === 'production'
+  const suffix = isProd ? '.min' : ''
+  const fileName = (format) => `${name}.${format}${suffix}.js`
 
   return {
     build: {
       outDir: 'dist',
-      emptyOutDir: isProd,
-      sourcemap: isProd,
-      minify: isProd ? 'esbuild' : false,
+      emptyOutDir: false,
+      sourcemap: !isProd,
+      minify: isProd ? 'terser' : false,
+      terserOptions: isProd
+        ? {
+            format: {
+              comments: /^!/
+            }
+          }
+        : {},
       lib: {
         entry: 'src/index.js',
-        name: name,
+        name,
         formats: ['es', 'umd'],
-        fileName: (format) => {
-          const suffix = isProd ? '.min' : ''
-          return `${name}.${format}${suffix}.js`
-        }
+        fileName
       },
       rollupOptions: {
         output: {
-          banner: banner
+          banner
         }
       }
     }

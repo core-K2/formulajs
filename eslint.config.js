@@ -2,7 +2,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 
 export default [
-  { ignores: ['coverage', 'lib', 'mochawesome-report'] },
+  { ignores: ['coverage', 'lib', 'mochawesome-report', 'dist'] },
   {
     languageOptions: {
       ecmaVersion: 'latest',

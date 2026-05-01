@@ -1,15 +1,25 @@
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vite'
 
-export default defineConfig({
-  build: {
-    lib: {
-      entry: 'src/index.js',           // formulajsのエントリポイント（バージョンによって調整）
-      name: 'formulajs',               // UMD/IIFE用（今回は使わない）
-      formats: ['es'],                 // ESM のみ出力（これが重要！）
-      fileName: (format) => `formula.${format}.js`
-    },
-    outDir: 'dist',
-    emptyOutDir: true,
-    minify: true                       // 圧縮したい場合は true
+export default defineConfig(({ mode }) => {
+  const isProd = mode === 'production'
+  const name = 'formulajs'
+
+  return {
+    build: {
+      outDir: 'dist',
+      emptyOutDir: isProd,
+      sourcemap: isProd,
+      minify: isProd ? 'esbuild' : false,
+
+      lib: {
+        entry: 'src/index.js',
+        name: name,
+        formats: ['es', 'umd'],
+        fileName: (format) => {
+          const suffix = isProd ? '.min' : ''
+          return `${name}.${format}${suffix}.js`
+        }
+      }
+    }
   }
-});
+})

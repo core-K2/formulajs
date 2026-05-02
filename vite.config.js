@@ -6,6 +6,7 @@ const name = pkg.name.split('/').pop()
 const banner = `/*!
  * ${pkg.name} v${pkg.version}
  * ${pkg.description}
+ * Homepage: ${pkg.homepage}
  * License: ${pkg.license || 'MIT'}
  * Built: ${new Date().toISOString().split('T')[0]}
  */`
